@@ -44,8 +44,8 @@ jobs:
       - name: Upload Firmware To Release
         uses: ncipollo/release-action@v1
         with:
-          name: linkease-${{ matrix.tag }}-${{ matrix.arch }}
+          name: luci-theme-design
           allowUpdates: true
-          tag: linkease-${{ matrix.tag }}-${{ matrix.arch }}
+          tag: luci-theme-design
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: bin/packages/${{ matrix.arch }}/packages_ci/
