@@ -1,0 +1,51 @@
+name: Build linkease
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [build]
+
+jobs:
+  build:
+    name: Build ${{ matrix.arch }}-${{ matrix.tag }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - x86_64
+        tag:
+          - openwrt-24.10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/lib/{jvm,llvm} /usr/local /usr/src/* /var/lib/gems /var/lib/mysql /var/lib/snapd /etc/skel /opt/{microsoft,az,hostedtoolcache,cni,mssql-tools,pipx} /usr/share/{az*,dotnet,swift,miniconda,gradle*,java,kotlinc,ri,sbt} /root/{.sbt,.local,.npm} /usr/libexec/gcc/x86_64-linux-gnu/14 /usr/lib/x86_64-linux-gnu/{*clang*,*LLVM*} /home/linuxbrew
+
+      - name: Build Packages
+        uses: zhiern/openwrt-gh-action-sdk@helloworld
+        env:
+          ARCH: ${{ matrix.arch }}-${{ matrix.tag }}
+          FEEDNAME: packages_ci
+          PACKAGES: luci-theme-design
+          NO_REFRESH_CHECK: true
+          IGNORE_ERRORS: true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkease-${{ matrix.tag }}-${{ matrix.arch }}
+          path: bin/packages/${{ matrix.arch }}/packages_ci/
+
+      - name: Upload Firmware To Release
+        uses: ncipollo/release-action@v1
+        with:
+          name: linkease-${{ matrix.tag }}-${{ matrix.arch }}
+          allowUpdates: true
+          tag: linkease-${{ matrix.tag }}-${{ matrix.arch }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: bin/packages/${{ matrix.arch }}/packages_ci/
