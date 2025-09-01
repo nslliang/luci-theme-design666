@@ -37,7 +37,7 @@ jobs:
           FEEDNAME: packages_ci
           PACKAGES: luci-theme-design
           NO_REFRESH_CHECK: true
-          IGNORE_ERRORS: true
+          IGNORE_ERRORS: false
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
