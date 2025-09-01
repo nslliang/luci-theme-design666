@@ -13,13 +13,13 @@ jobs:
       fail-fast: false
       matrix:
         arch:
-          - aarch64_cortex-a53
+          - ipq807x
           
         sdk:
-          - SNAPSHOT
+          - generic
           
         tag:
-          - openwrt-24.10
+          - 23.05.6
 
     steps:
       - uses: actions/checkout@v4
