@@ -19,7 +19,7 @@ jobs:
           - SNAPSHOT
           
         tag:
-          - 20250901
+          - ImmortalWrt-lPQ
 
     steps:
       - uses: actions/checkout@v4
